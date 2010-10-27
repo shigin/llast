@@ -1,0 +1,40 @@
+llast - time tail for logs
+==========================
+
+The llast command dump the lines of line according to time in the line.
+The time is specified by format similar to strptime with the only new option.
+
+Example
+=======
+
+$ # show the accesses in 10 seconds
+$ ./llast -s 10 access.log
+2010-10-27 22:20:30 GET /
+2010-10-27 22:20:31 GET /stat
+2010-10-27 22:20:32 GET /index.html
+....
+2010-10-27 22:20:40 GET /stat
+
+$ # show the accesses in 10 seconds with specific format
+$ ./llast -f "\w %Y-%m-%d %H-%M-%S" -s 10 access.log
+127.0.0.1 2010-10-27 22:20:30 GET /
+127.0.0.1 2010-10-27 22:20:31 GET /stat
+127.0.0.1 2010-10-27 22:20:32 GET /index.html
+....
+127.0.0.1 2010-10-27 22:20:40 GET /stat
+
+Format
+======
+
+Llast uses standard strptime routine to parse time in log. There is the only
+extension to strptime format string: '\w'. '\w' matches any word separated by
+white spaces.
+
+The reason for '\w' is IP-address which precede time in some logs.
+
+
+TODO
+====
+
+Add some test suite.
+Add -h/-m for hours and minutes.

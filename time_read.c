@@ -6,8 +6,15 @@
 
 #define MAX_LINE 1024
 
+static int skip_word(char **buffer) {
+    while (!isspace(**buffer)) {
+        if (**buffer == '\0') return 0;
+        ++(*buffer);
+    }
+    return 1;
+}
+
 time_t read_time_buffer(char *buffer, char *format) {
-    int special = 0;
     struct tm tms;
     memset(&tms, 0, sizeof(tms));
 
@@ -16,25 +23,19 @@ time_t read_time_buffer(char *buffer, char *format) {
         char *ptime;
         char save;
 
-        if (special) {
+        switch (*format) {
+          case '\\':
+            ++format;
             switch (*format) {
               case 'w':
-                if (*buffer == '\0') return 0;
-                if (!isspace(*buffer)) {
-                    ++buffer;
-                } else {
-                    ++format;
-                    special = 0;
-                }
+                if (!skip_word(&buffer))
+                    return 0;
                 break;
               default:
                 fprintf(stderr, "read_time: invalid special specification: %c\n",
                     *format);
                 return 0;
             }
-        } else switch (*format) {
-          case '\\':
-            special = 1;
             ++format;
             break;
           case '%':

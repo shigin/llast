@@ -16,7 +16,8 @@ static int skip_word(char **buffer) {
 
 time_t read_time_buffer(char *buffer, char *format) {
     struct tm tms;
-    memset(&tms, 0, sizeof(tms));
+    time_t now = time(NULL);
+    gmtime_r(&now, &tms);
 
     while (*format) {
         char *at;

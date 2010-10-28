@@ -6,7 +6,7 @@ llast: llast.o time_read.o
 test_read: test_read.o time_read.o
 	$(CC) $(LDFLAGS) -o test_read test_read.o time_read.o
 
-test: llast
+test: all
 	./test_read
 
 clean:

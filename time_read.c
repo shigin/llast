@@ -30,13 +30,15 @@ time_t read_time_buffer(char *buffer, char *format) {
               case 'w':
                 if (!skip_word(&buffer))
                     return 0;
+                ++format;
+                continue;
+              case '\\':
                 break;
               default:
                 fprintf(stderr, "read_time: invalid special specification: %c\n",
                     *format);
                 return 0;
             }
-            ++format;
             break;
           case '%':
             at = strchr(format, '\\');
@@ -57,14 +59,13 @@ time_t read_time_buffer(char *buffer, char *format) {
             if (!at) {
                 return mktime(&tms);
             }
-            break;
-          default:
-            if (*format == *buffer) {
-                ++format;
-                ++buffer;
-            } else
-                return 0;
+            continue;
         }
+        if (*format == *buffer) {
+            ++format;
+            ++buffer;
+        } else
+            return 0;
     }
     return mktime(&tms);
 }
